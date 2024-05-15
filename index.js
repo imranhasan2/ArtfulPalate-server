@@ -28,6 +28,8 @@ async function run() {
 
         const foodCollection = client.db('foodCollectionDb').collection('addFood')
 
+        const purchaseCollection = client.db('foodCollectionDb').collection('purchase')
+
 
         app.post('/addFood', async (req, res) => {
             const item = req.body;
@@ -37,20 +39,48 @@ async function run() {
 
         })
 
-        app.get('/addFood',async(req,res) => {
+        app.get('/addFood', async (req, res) => {
 
             const query = foodCollection.find()
             const result = await query.toArray()
             res.send(result)
         })
 
-        app.get('/addFood/:id',async(req,res) =>{
+        app.get('/addFood/:id', async (req, res) => {
             const id = req.params.id;
-            const query ={_id : new ObjectId (id)}
+            const query = { _id: new ObjectId(id) }
             const result = await foodCollection.findOne(query)
             res.send(result)
 
         })
+
+
+        // foodPurchase Page
+
+        app.post('/purchase', async (req, res) => {
+            const purchase = req.body;
+            const id = purchase._id;
+            const result = await purchaseCollection.insertOne(purchase)
+
+            await foodCollection.updateOne(
+                { _id: id }, { $inc: { orderCount: 1 } }
+            )
+            res.send(result)
+
+        })
+
+
+
+        app.get('/purchase', async (req, res) => {
+            const topFoods = await foodCollection.find().sort({ orderCount: -1 })
+            .limit(6)
+            .toArray()
+
+               
+
+            res.send(topFoods)
+        })
+
 
 
         // Send a ping to confirm a successful connection
