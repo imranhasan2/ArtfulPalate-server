@@ -56,20 +56,35 @@ async function run() {
         })
 
 
+       
+
+        app.get('/myFoods', async (req, res) => {
+            
+                const email = req.query.email; 
+                const query ={ email: email } 
+                const result = await foodCollection.find(query).toArray();
+                res.send(result);
+            
+        });
+
+
+
+
+
         // photo
 
 
-        app.post('/photo',async(req,res) => {
-            const photo =req.body;
-           
+        app.post('/photo', async (req, res) => {
+            const photo = req.body;
+
             const result = await photoGallery.insertOne(photo)
 
             res.send(result)
 
         })
 
-        app.get('/photo',async(req,res) => {
-            const photo =req.body;
+        app.get('/photo', async (req, res) => {
+            const photo = req.body;
             const result = await photoGallery.find(photo).toArray()
 
             res.send(result)
@@ -96,10 +111,10 @@ async function run() {
 
         app.get('/purchase', async (req, res) => {
             const topFoods = await foodCollection.find().sort({ orderCount: -1 })
-            .limit(6)
-            .toArray()
+                .limit(6)
+                .toArray()
 
-               
+
 
             res.send(topFoods)
         })
