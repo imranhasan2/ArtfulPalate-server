@@ -29,6 +29,7 @@ async function run() {
         const foodCollection = client.db('foodCollectionDb').collection('addFood')
 
         const purchaseCollection = client.db('foodCollectionDb').collection('purchase')
+        const photoGallery = client.db('foodCollectionDb').collection('photo')
 
 
         app.post('/addFood', async (req, res) => {
@@ -53,6 +54,28 @@ async function run() {
             res.send(result)
 
         })
+
+
+        // photo
+
+
+        app.post('/photo',async(req,res) => {
+            const photo =req.body;
+           
+            const result = await photoGallery.insertOne(photo)
+
+            res.send(result)
+
+        })
+
+        app.get('/photo',async(req,res) => {
+            const photo =req.body;
+            const result = await photoGallery.find(photo).toArray()
+
+            res.send(result)
+        })
+
+
 
 
         // foodPurchase Page
